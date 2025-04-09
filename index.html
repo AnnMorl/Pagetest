@@ -1,1 +1,399 @@
-<h1>Galery Art</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería de Arte Virtual</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos globales */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #fafafa;
+      color: #333;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Botón de subir obra */
+    .upload-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #ff6347;
+      color: white;
+      font-size: 2rem;
+      padding: 20px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .upload-btn:hover {
+      background-color: #e5533e;
+    }
+
+    /* Estilos de control de búsqueda y filtro */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      padding: 2rem;
+      gap: 1rem;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .controls select, .controls input, .controls button {
+      padding: 10px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      color: #666;
+      font-size: 1rem;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .controls select:hover, .controls input:hover, .controls button:hover {
+      background-color: #e1e1e1;
+    }
+
+    /* Galería */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Estilo de las publicaciones */
+    .art-post {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .art-post:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Estilo de la imagen */
+    .art-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .art-image:hover {
+      transform: scale(1.05);
+    }
+
+    /* Títulos y descripción */
+    .art-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0.5rem 0;
+      color: #333;
+    }
+
+    .art-description {
+      font-size: 1rem;
+      color: #777;
+      margin-bottom: 1rem;
+    }
+
+    /* Comentarios */
+    .art-comments {
+      margin-top: 1rem;
+    }
+
+    .comments-list {
+      margin-top: 10px;
+    }
+
+    /* Estilo del lightbox */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .art-post {
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* Estilos de formulario */
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2000;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    form input, form select, form textarea {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f7f7f7;
+      border: 1px solid #ddd;
+      color: #666;
+      font-size: 1rem;
+      border-radius: 5px;
+    }
+
+    form button {
+      padding: 15px;
+      background-color: #f28f8f;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #ff6347;
+    }
+
+    /* Botón cerrar formulario */
+    .close-form-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: #333;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Galería de Arte Virtual</h1>
+  </header>
+
+  <!-- Controles de búsqueda y filtro -->
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Buscar obra por título..." oninput="filterGallery()">
+    <select id="filterTechnique" onchange="filterGallery()">
+      <option value="">Filtrar por técnica</option>
+      <option value="óleo">Óleo</option>
+      <option value="acrílico">Acrílico</option>
+      <option value="mixtas">Mixtas</option>
+    </select>
+
+    <select id="languageSelect" onchange="changeLanguage()">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+    </select>
+
+    <button onclick="sortGallery()">Ordenar</button>
+  </div>
+
+  <!-- Botón de subir nueva obra -->
+  <button class="upload-btn" onclick="toggleUploadForm()">+</button>
+
+  <!-- Formulario para subir nuevas obras -->
+  <div id="uploadFormContainer">
+    <form id="uploadForm">
+      <button type="button" class="close-form-btn" onclick="toggleUploadForm()">✖️</button>
+      <h2>Sube tu obra</h2>
+      <input type="text" id="newTitle" placeholder="Título de la obra" required /><br />
+      <input type="text" id="newArtist" placeholder="Nombre del artista" required /><br />
+      <select id="newTechnique" required>
+        <option value="">Selecciona técnica</option>
+        <option value="óleo">Óleo</option>
+        <option value="acrílico">Acrílico</option>
+        <option value="mixtas">Técnica Mixta</option>
+      </select><br />
+      <input type="file" id="newImage" accept="image/*" required /><br />
+      <textarea id="newDescription" placeholder="Descripción de la obra" required></textarea><br />
+      <button type="submit">Subir obra</button>
+    </form>
+  </div>
+
+  <!-- Galería de arte -->
+  <div class="gallery" id="gallery"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <span class="close-btn" onclick="closeLightbox()">✖️</span>
+    <img id="lightbox-image" src="" alt="Imagen ampliada">
+  </div>
+
+  <script>
+    let artworks = [];
+
+    function filterGallery() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      const techniqueFilter = document.getElementById('filterTechnique').value;
+
+      const filteredArtworks = artworks.filter(artwork => {
+        return (
+          (artwork.title.toLowerCase().includes(searchInput) || artwork.artist.toLowerCase().includes(searchInput)) &&
+          (techniqueFilter === '' || artwork.technique === techniqueFilter)
+        );
+      });
+
+      displayGallery(filteredArtworks);
+    }
+
+    function changeLanguage() {
+      const language = document.getElementById('languageSelect').value;
+      if (language === 'en') {
+        document.querySelector('header h1').innerText = "Virtual Art Gallery";
+      } else {
+        document.querySelector('header h1').innerText = "Galería de Arte Virtual";
+      }
+    }
+
+    function sortGallery() {
+      const sortedArtworks = [...artworks];
+      sortedArtworks.sort((a, b) => new Date(b.date) - new Date(a.date));
+      displayGallery(sortedArtworks);
+    }
+
+    function displayGallery(artworks) {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+
+      artworks.forEach(artwork => {
+        const artworkElement = document.createElement('div');
+        artworkElement.classList.add('art-post');
+
+        artworkElement.innerHTML = `
+          <img class="art-image" src="${artwork.image}" alt="${artwork.title}" onclick="openLightbox('${artwork.image}')">
+          <h3 class="art-title">${artwork.title}</h3>
+          <p class="art-description">${artwork.description}</p>
+          <button class="favorite-btn ${artwork.favorite ? 'favorited' : ''}" onclick="toggleFavorite(${artwork.id})">${artwork.favorite ? '❤️' : '🤍'}</button>
+          <div class="art-comments">
+            <textarea placeholder="Añadir comentario..." oninput="saveComment(${artwork.id}, this.value)"></textarea>
+            <div class="comments-list">
+              ${artwork.comments.map(comment => `<p>${comment}</p>`).join('')}
+            </div>
+          </div>
+        `;
+        
+        gallery.appendChild(artworkElement);
+      });
+    }
+
+    function openLightbox(imageSrc) {
+      document.getElementById('lightbox').style.display = 'flex';
+      document.getElementById('lightbox-image').src = imageSrc;
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+
+    function saveComment(artworkId, commentText) {
+      const artwork = artworks.find(art => art.id === artworkId);
+      artwork.comments = commentText.split('\n');
+      displayGallery(artworks);
+    }
+
+    function toggleFavorite(artworkId) {
+      const artwork = artworks.find(art => art.id === artworkId);
+      artwork.favorite = !artwork.favorite;
+      displayGallery(artworks);
+    }
+
+    function toggleUploadForm() {
+      const formContainer = document.getElementById('uploadFormContainer');
+      formContainer.style.display = formContainer.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const newTitle = document.getElementById('newTitle').value;
+      const newArtist = document.getElementById('newArtist').value;
+      const newTechnique = document.getElementById('newTechnique').value;
+      const newImage = document.getElementById('newImage').files[0];
+      const newDescription = document.getElementById('newDescription').value;
+
+      if (newTitle && newArtist && newTechnique && newImage && newDescription) {
+        const newArtwork = {
+          id: artworks.length + 1,
+          title: newTitle,
+          artist: newArtist,
+          technique: newTechnique,
+          image: URL.createObjectURL(newImage),
+          description: newDescription,
+          favorite: false,
+          comments: []
+        };
+
+        artworks.push(newArtwork);
+        displayGallery(artworks);
+        toggleUploadForm(); // Cierra el formulario después de subir la obra.
+      }
+    });
+  </script>
+</body>
+</html>
